@@ -1,83 +1,85 @@
 def solve_sudoku(board):
     """
-    Solves a Sudoku puzzle using backtracking algorithm.
+    Solves a Sudoku puzzle using backtracking with optimization.
     Input: List of lists representing 9x9 Sudoku grid (0 represents empty cells)
-    Output: Solved board if solution exists, None if no solution exists
+    Output: Returns a new completed board if solution exists, None if no solution exists
     """
+    # Validate board first
     if not is_valid_board(board):
         return None
     
-    # Find empty location
-    empty = find_empty(board)
-    if not empty:
-        return board  # Puzzle is solved
-        
-    row, col = empty
+    # Create a copy of the board
+    board = [row[:] for row in board]
     
-    # Try digits 1-9
-    for num in range(1, 10):
-        # Check if number is safe to place
-        if is_safe(board, row, col, num):
-            board[row][col] = num
-            
-            # Recursively try to solve rest of puzzle
-            if solve_sudoku(board):
-                return board
-                
-            # If placing number didn't lead to solution, backtrack
-            board[row][col] = 0
-            
-    return None  # No solution exists
-
-def find_empty(board):
-    """Find an empty cell in the board (represented by 0)"""
-    for i in range(9):
-        for j in range(9):
-            if board[i][j] == 0:
-                return (i, j)
+    # Find all empty positions
+    empty_pos = [(i, j) for i in range(9) for j in range(9) if board[i][j] == 0]
+    
+    if solve_helper(board, empty_pos, 0):
+        return board
     return None
 
+def solve_helper(board, empty_pos, pos_idx):
+    """Optimized helper function for recursive solving"""
+    if pos_idx >= len(empty_pos):
+        return True
+        
+    row, col = empty_pos[pos_idx]
+    
+    # Pre-calculate valid numbers for this position
+    for num in range(1, 10):
+        if is_safe(board, row, col, num):
+            board[row][col] = num
+            if solve_helper(board, empty_pos, pos_idx + 1):
+                return True
+            board[row][col] = 0
+            
+    return False
+
 def is_safe(board, row, col, num):
-    """Check if it's safe to place number at given position"""
+    """Optimized safety check"""
     # Check row
-    for x in range(9):
-        if board[row][x] == num:
-            return False
+    if num in board[row]:
+        return False
     
     # Check column
-    for x in range(9):
-        if board[x][col] == num:
-            return False
+    if num in (board[i][col] for i in range(9)):
+        return False
     
     # Check 3x3 box
-    start_row, start_col = 3 * (row // 3), 3 * (col // 3)
-    for i in range(3):
-        for j in range(3):
-            if board[i + start_row][j + start_col] == num:
+    box_row, box_col = 3 * (row // 3), 3 * (col // 3)
+    for i in range(box_row, box_row + 3):
+        for j in range(box_col, box_col + 3):
+            if board[i][j] == num:
                 return False
     
     return True
 
 def is_valid_board(board):
-    """Check if initial board state is valid"""
-    if not isinstance(board, list) or len(board) != 9:
+    """Validate initial board state"""
+    if len(board) != 9 or any(len(row) != 9 for row in board):
         return False
     
+    # Check for invalid numbers and duplicates in rows
     for row in board:
-        if not isinstance(row, list) or len(row) != 9:
+        nums = [n for n in row if n != 0]
+        if any(n < 0 or n > 9 for n in row) or len(nums) != len(set(nums)):
             return False
-        for num in row:
-            if not isinstance(num, int) or num < 0 or num > 9:
+    
+    # Check for duplicates in columns
+    for col in range(9):
+        nums = [board[row][col] for row in range(9) if board[row][col] != 0]
+        if len(nums) != len(set(nums)):
+            return False
+    
+    # Check for duplicates in 3x3 boxes
+    for box_row in range(0, 9, 3):
+        for box_col in range(0, 9, 3):
+            nums = []
+            for i in range(box_row, box_row + 3):
+                for j in range(box_col, box_col + 3):
+                    if board[i][j] != 0:
+                        nums.append(board[i][j])
+            if len(nums) != len(set(nums)):
                 return False
-            
-    # Check for initial conflicts
-    for i in range(9):
-        for j in range(9):
-            if board[i][j] != 0:
-                temp = board[i][j]
-                board[i][j] = 0
-                if not is_safe(board, i, j, temp):
-                    return False
-                board[i][j] = temp
-                
+    
     return True

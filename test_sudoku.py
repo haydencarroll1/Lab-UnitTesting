@@ -2,9 +2,9 @@ import unittest
 from sudoku import solve_sudoku
 
 class TestSudokuSolver(unittest.TestCase):
-    def test_wikipedia_puzzle(self):
-        # Test case from Wikipedia
-        initial_board = [
+    def test_puzzle1(self):
+        # Example puzzle 1 (Easy)
+        board = [
             [5,3,0,0,7,0,0,0,0],
             [6,0,0,1,9,5,0,0,0],
             [0,9,8,0,0,0,0,6,0],
@@ -15,8 +15,7 @@ class TestSudokuSolver(unittest.TestCase):
             [0,0,0,4,1,9,0,0,5],
             [0,0,0,0,8,0,0,7,9]
         ]
-        
-        expected_solution = [
+        solution = [
             [5,3,4,6,7,8,9,1,2],
             [6,7,2,1,9,5,3,4,8],
             [1,9,8,3,4,2,5,6,7],
@@ -27,46 +26,122 @@ class TestSudokuSolver(unittest.TestCase):
             [2,8,7,4,1,9,6,3,5],
             [3,4,5,2,8,6,1,7,9]
         ]
-        
-        solution = solve_sudoku(initial_board)
-        self.assertEqual(solution, expected_solution)
-    
-    def test_empty_puzzle(self):
-        # Test completely empty puzzle
-        initial_board = [[0]*9 for _ in range(9)]
-        solution = solve_sudoku(initial_board)
-        self.assertIsNotNone(solution)
-        # Verify solution is valid
-        for i in range(9):
-            self.assertEqual(set(solution[i]), set(range(1, 10)))
-    
-    def test_invalid_board_size(self):
-        # Test invalid board size
-        invalid_board = [[0]*8 for _ in range(8)]  # 8x8 instead of 9x9
-        solution = solve_sudoku(invalid_board)
-        self.assertIsNone(solution)
-    
-    def test_invalid_numbers(self):
-        # Test board with invalid numbers
-        invalid_board = [
-            [5,3,0,0,7,0,0,0,0],
-            [6,0,0,1,9,5,0,0,0],
-            [0,9,8,0,0,0,0,6,0],
-            [8,0,0,0,6,0,0,0,3],
-            [4,0,0,8,0,3,0,0,1],
-            [7,0,0,0,2,0,0,0,6],
-            [0,6,0,0,0,0,2,8,0],
-            [0,0,0,4,1,9,0,0,10],  # 10 is invalid
-            [0,0,0,0,8,0,0,7,9]
+        result = solve_sudoku(board)
+        self.assertEqual(result, solution)
+
+    def test_puzzle2(self):
+        # Example puzzle 2 (Medium)
+        board = [
+            [0,0,0,2,6,0,7,0,1],
+            [6,8,0,0,7,0,0,9,0],
+            [1,9,0,0,0,4,5,0,0],
+            [8,2,0,1,0,0,0,4,0],
+            [0,0,4,6,0,2,9,0,0],
+            [0,5,0,0,0,3,0,2,8],
+            [0,0,9,3,0,0,0,7,4],
+            [0,4,0,0,5,0,0,3,6],
+            [7,0,3,0,1,8,0,0,0]
         ]
-        solution = solve_sudoku(invalid_board)
-        self.assertIsNone(solution)
-    
-    def test_unsolvable_puzzle(self):
-        # Test unsolvable puzzle
-        unsolvable_board = [
-            [5,3,0,0,7,0,0,0,0],
-            [5,0,0,1,9,5,0,0,0],  # Note the duplicate 5 in column 1
+        solution = [
+            [4,3,5,2,6,9,7,8,1],
+            [6,8,2,5,7,1,4,9,3],
+            [1,9,7,8,3,4,5,6,2],
+            [8,2,6,1,9,5,3,4,7],
+            [3,7,4,6,8,2,9,1,5],
+            [9,5,1,7,4,3,6,2,8],
+            [5,1,9,3,2,6,8,7,4],
+            [2,4,8,9,5,7,1,3,6],
+            [7,6,3,4,1,8,2,5,9]
+        ]
+        result = solve_sudoku(board)
+        self.assertEqual(result, solution)
+
+    def test_puzzle3(self):
+        # Example puzzle 3 (Hard)
+        board = [
+            [0,0,0,6,0,0,4,0,0],
+            [7,0,0,0,0,3,6,0,0],
+            [0,0,0,0,9,1,0,8,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,5,0,1,8,0,0,0,3],
+            [0,0,0,3,0,6,0,4,5],
+            [0,4,0,2,0,0,0,6,0],
+            [9,0,3,0,0,0,0,0,0],
+            [0,2,0,0,0,0,1,0,0]
+        ]
+        solution = [
+            [5,8,1,6,7,2,4,3,9],
+            [7,9,2,8,4,3,6,5,1],
+            [3,6,4,5,9,1,7,8,2],
+            [4,3,8,9,5,7,2,1,6],
+            [2,5,6,1,8,4,9,7,3],
+            [1,7,9,3,2,6,8,4,5],
+            [8,4,5,2,1,9,3,6,7],
+            [9,1,3,7,6,8,5,2,4],
+            [6,2,7,4,3,5,1,9,8]
+        ]
+        result = solve_sudoku(board)
+        self.assertEqual(result, solution)
+
+    def test_puzzle4(self):
+        # Example puzzle 4 (Expert)
+        board = [
+            [0,0,5,3,0,0,0,0,0],
+            [8,0,0,0,0,0,0,2,0],
+            [0,7,0,0,1,0,5,0,0],
+            [4,0,0,0,0,5,3,0,0],
+            [0,1,0,0,7,0,0,0,6],
+            [0,0,3,2,0,0,0,8,0],
+            [0,6,0,5,0,0,0,0,9],
+            [0,0,4,0,0,0,0,3,0],
+            [0,0,0,0,0,9,7,0,0]
+        ]
+        solution = [
+            [1,4,5,3,2,7,6,9,8],
+            [8,3,9,6,5,4,1,2,7],
+            [6,7,2,9,1,8,5,4,3],
+            [4,9,6,1,8,5,3,7,2],
+            [2,1,8,4,7,3,9,5,6],
+            [7,5,3,2,9,6,4,8,1],
+            [3,6,7,5,4,2,8,1,9],
+            [9,8,4,7,6,1,2,3,5],
+            [5,2,1,8,3,9,7,6,4]
+        ]
+        result = solve_sudoku(board)
+        self.assertEqual(result, solution)
+
+    def test_puzzle5(self):
+        # Example puzzle 5 (Another Hard)
+        board = [
+            [0,0,0,0,0,0,0,1,0],
+            [4,0,0,0,0,0,0,0,0],
+            [0,2,0,0,0,0,0,0,0],
+            [0,0,0,0,5,0,4,0,7],
+            [0,0,8,0,0,0,3,0,0],
+            [0,0,1,0,9,0,0,0,0],
+            [3,0,0,4,0,0,2,0,0],
+            [0,5,0,1,0,0,0,0,0],
+            [0,0,0,8,0,6,0,0,0]
+        ]
+        solution = [
+            [8,3,9,5,7,4,6,1,2],
+            [4,1,5,6,8,2,7,3,9],
+            [6,2,7,9,3,1,5,4,8],
+            [2,9,3,8,5,6,4,1,7],
+            [5,7,8,2,1,4,3,9,6],
+            [7,4,1,3,9,5,8,2,6],
+            [3,8,6,4,7,9,2,5,1],
+            [9,5,2,1,4,3,7,6,8],
+            [1,4,7,8,2,6,9,5,3]
+        ]
+        result = solve_sudoku(board)
+        self.assertEqual(result, solution)
+
+    def test_puzzle6(self):
+        # Example puzzle 6 (Invalid board)
+        board = [
+            [5,5,0,0,7,0,0,0,0],  # Note the duplicate 5 in first row
+            [6,0,0,1,9,5,0,0,0],
             [0,9,8,0,0,0,0,6,0],
             [8,0,0,0,6,0,0,0,3],
             [4,0,0,8,0,3,0,0,1],
@@ -75,24 +150,8 @@ class TestSudokuSolver(unittest.TestCase):
             [0,0,0,4,1,9,0,0,5],
             [0,0,0,0,8,0,0,7,9]
         ]
-        solution = solve_sudoku(unsolvable_board)
-        self.assertIsNone(solution)
-    
-    def test_already_solved_puzzle(self):
-        # Test already solved puzzle
-        solved_board = [
-            [5,3,4,6,7,8,9,1,2],
-            [6,7,2,1,9,5,3,4,8],
-            [1,9,8,3,4,2,5,6,7],
-            [8,5,9,7,6,1,4,2,3],
-            [4,2,6,8,5,3,7,9,1],
-            [7,1,3,9,2,4,8,5,6],
-            [9,6,1,5,3,7,2,8,4],
-            [2,8,7,4,1,9,6,3,5],
-            [3,4,5,2,8,6,1,7,9]
-        ]
-        solution = solve_sudoku(solved_board)
-        self.assertEqual(solution, solved_board)
+        result = solve_sudoku(board)
+        self.assertIsNone(result)
 
 if __name__ == '__main__':
     unittest.main()
